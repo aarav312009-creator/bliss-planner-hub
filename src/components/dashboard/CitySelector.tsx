@@ -20,21 +20,22 @@ export function CitySelector({ selectedCity, onCityChange }: CitySelectorProps) 
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="gap-2 bg-card hover:bg-secondary/50 border-border"
+          size="sm"
+          className="gap-1.5 bg-card hover:bg-secondary/50 border-border h-8 px-3 text-sm"
         >
-          <MapPin className="h-4 w-4 text-primary" />
+          <MapPin className="h-3.5 w-3.5 text-primary" />
           <span className="font-medium">{selectedCity}</span>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48">
+      <DropdownMenuContent align="center" className="w-40 bg-card">
         {cities.map((city) => (
           <DropdownMenuItem
             key={city}
             onClick={() => onCityChange(city)}
             className={city === selectedCity ? "bg-secondary" : ""}
           >
-            <MapPin className="h-4 w-4 mr-2 text-primary" />
+            <MapPin className="h-3.5 w-3.5 mr-2 text-primary" />
             {city}
           </DropdownMenuItem>
         ))}

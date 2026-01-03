@@ -8,6 +8,9 @@ export function BudgetOverview() {
   const percentUsed = Math.round((totalSpent / totalAllocated) * 100);
 
   const formatCurrency = (amount: number) => {
+    if (amount >= 100000) {
+      return `₹${(amount / 100000).toFixed(1)}L`;
+    }
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
       currency: "INR",
@@ -17,13 +20,13 @@ export function BudgetOverview() {
 
   return (
     <Card className="bg-card border-border shadow-sm">
-      <CardHeader className="pb-4">
-        <CardTitle className="font-heading text-2xl">Budget Overview</CardTitle>
+      <CardHeader className="pb-3 px-4">
+        <CardTitle className="font-heading text-lg">Budget Overview</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Total Budget Ring */}
+      <CardContent className="space-y-4 px-4 pb-4">
+        {/* Total Budget Ring - Smaller for mobile */}
         <div className="flex items-center justify-center">
-          <div className="relative w-48 h-48">
+          <div className="relative w-32 h-32">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle
                 cx="50"
@@ -31,7 +34,7 @@ export function BudgetOverview() {
                 r="40"
                 fill="none"
                 stroke="hsl(var(--muted))"
-                strokeWidth="8"
+                strokeWidth="10"
               />
               <circle
                 cx="50"
@@ -39,49 +42,49 @@ export function BudgetOverview() {
                 r="40"
                 fill="none"
                 stroke="hsl(var(--primary))"
-                strokeWidth="8"
+                strokeWidth="10"
                 strokeLinecap="round"
                 strokeDasharray={`${percentUsed * 2.51} 251`}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-3xl font-heading font-semibold text-foreground">
+              <span className="text-2xl font-heading font-semibold text-foreground">
                 {percentUsed}%
               </span>
-              <span className="text-sm text-muted-foreground">Used</span>
+              <span className="text-xs text-muted-foreground">Used</span>
             </div>
           </div>
         </div>
 
-        {/* Budget Summary */}
-        <div className="grid grid-cols-2 gap-4 text-center">
-          <div className="p-4 rounded-lg bg-secondary/50">
-            <p className="text-sm text-muted-foreground">Total Budget</p>
-            <p className="text-xl font-semibold text-foreground">{formatCurrency(totalAllocated)}</p>
+        {/* Budget Summary - Side by Side */}
+        <div className="grid grid-cols-2 gap-3 text-center">
+          <div className="p-3 rounded-lg bg-secondary/50">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Total</p>
+            <p className="text-base font-semibold text-foreground">{formatCurrency(totalAllocated)}</p>
           </div>
-          <div className="p-4 rounded-lg bg-secondary/50">
-            <p className="text-sm text-muted-foreground">Spent</p>
-            <p className="text-xl font-semibold text-foreground">{formatCurrency(totalSpent)}</p>
+          <div className="p-3 rounded-lg bg-secondary/50">
+            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Spent</p>
+            <p className="text-base font-semibold text-foreground">{formatCurrency(totalSpent)}</p>
           </div>
         </div>
 
-        {/* Category Breakdown */}
-        <div className="space-y-4">
-          <h4 className="font-medium text-foreground">Category Breakdown</h4>
-          {budgetCategories.map((category) => {
+        {/* Category Breakdown - Compact */}
+        <div className="space-y-3">
+          <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">By Category</h4>
+          {budgetCategories.slice(0, 4).map((category) => {
             const categoryPercent = Math.round((category.spent / category.allocated) * 100);
             return (
-              <div key={category.id} className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2">
-                    <span>{category.icon}</span>
+              <div key={category.id} className="space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="text-sm">{category.icon}</span>
                     <span className="text-foreground">{category.name}</span>
                   </span>
-                  <span className="text-muted-foreground">
-                    {formatCurrency(category.spent)} / {formatCurrency(category.allocated)}
+                  <span className="text-muted-foreground text-[10px]">
+                    {formatCurrency(category.spent)}
                   </span>
                 </div>
-                <Progress value={categoryPercent} className="h-2" />
+                <Progress value={categoryPercent} className="h-1.5" />
               </div>
             );
           })}
