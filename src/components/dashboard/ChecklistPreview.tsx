@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function ChecklistPreview() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
@@ -18,52 +20,53 @@ export function ChecklistPreview() {
     );
   };
 
-  // Show only first 6 tasks in preview
-  const previewTasks = tasks.slice(0, 6);
+  // Show only first 4 tasks in mobile preview
+  const previewTasks = tasks.slice(0, 4);
 
   return (
     <Card className="bg-card border-border shadow-sm">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-3 px-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="font-heading text-2xl">Planning Checklist</CardTitle>
-          <Badge variant="secondary" className="text-sm">
-            {completedCount}/{totalCount} done
+          <CardTitle className="font-heading text-lg">Checklist</CardTitle>
+          <Badge variant="secondary" className="text-xs px-2 py-0.5">
+            {completedCount}/{totalCount}
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 px-4 pb-4">
         {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="h-3 rounded-full bg-muted overflow-hidden">
+        <div className="space-y-1">
+          <div className="h-2 rounded-full bg-muted overflow-hidden">
             <div
               className="h-full bg-primary rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <p className="text-sm text-muted-foreground text-center">
+          <p className="text-[10px] text-muted-foreground text-right">
             {progressPercent}% complete
           </p>
         </div>
 
-        {/* Task List */}
-        <div className="space-y-3">
+        {/* Task List - Compact */}
+        <div className="space-y-2">
           {previewTasks.map((task) => (
             <div
               key={task.id}
               className={cn(
-                "flex items-center gap-3 p-3 rounded-lg transition-colors",
-                task.completed ? "bg-muted/50" : "bg-secondary/30 hover:bg-secondary/50"
+                "flex items-center gap-3 p-2.5 rounded-lg transition-colors active:scale-[0.98]",
+                task.completed ? "bg-muted/50" : "bg-secondary/30"
               )}
+              onClick={() => toggleTask(task.id)}
             >
               <Checkbox
                 checked={task.completed}
                 onCheckedChange={() => toggleTask(task.id)}
-                className="border-primary data-[state=checked]:bg-primary"
+                className="border-primary data-[state=checked]:bg-primary h-5 w-5"
               />
               <div className="flex-1 min-w-0">
                 <p
                   className={cn(
-                    "text-sm font-medium truncate",
+                    "text-sm truncate",
                     task.completed
                       ? "text-muted-foreground line-through"
                       : "text-foreground"
@@ -72,16 +75,21 @@ export function ChecklistPreview() {
                   {task.title}
                 </p>
               </div>
-              <Badge variant="outline" className="text-xs shrink-0">
+              <Badge variant="outline" className="text-[10px] shrink-0 px-1.5 py-0">
                 {task.timeline}
               </Badge>
             </div>
           ))}
         </div>
 
-        <p className="text-sm text-muted-foreground text-center pt-2">
-          +{totalCount - 6} more tasks
-        </p>
+        {/* View All Link */}
+        <Link 
+          to="/checklist"
+          className="flex items-center justify-center gap-1 text-xs text-primary font-medium pt-1 active:opacity-70"
+        >
+          View all {totalCount} tasks
+          <ChevronRight className="h-3 w-3" />
+        </Link>
       </CardContent>
     </Card>
   );

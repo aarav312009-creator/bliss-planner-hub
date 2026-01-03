@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Layout } from "@/components/layout/Layout";
+import { MobileLayout } from "@/components/layout/MobileLayout";
 import { galleryItems, GalleryItem } from "@/data/mockData";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -23,60 +23,59 @@ const Gallery = () => {
   );
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
+    <MobileLayout title="Gallery" showLogo={false}>
+      <div className="px-4 py-4 space-y-4">
         {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h1 className="font-heading text-4xl md:text-5xl font-semibold text-foreground mb-4">
-            Real Wedding Showcase
-          </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Get inspired by beautiful weddings captured by our featured vendors
+        <div className="text-center">
+          <h2 className="font-heading text-xl font-semibold text-foreground mb-1">
+            Real Weddings
+          </h2>
+          <p className="text-xs text-muted-foreground">
+            Get inspired by beautiful moments
           </p>
         </div>
 
-        {/* Style Filters */}
-        <div className="flex justify-center gap-2 mb-10 flex-wrap animate-fade-in" style={{ animationDelay: "0.1s" }}>
+        {/* Style Filters - Horizontal Scroll */}
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
           {styles.map((style) => (
             <Button
               key={style}
               variant={selectedStyle === style ? "default" : "outline"}
               size="sm"
               onClick={() => setSelectedStyle(style)}
-              className="px-6"
+              className="shrink-0 h-8 text-xs px-4"
             >
               {style}
             </Button>
           ))}
         </div>
 
-        {/* Gallery Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map((item, index) => (
+        {/* Gallery Grid - 2 columns for mobile */}
+        <div className="grid grid-cols-2 gap-2">
+          {filteredItems.map((item) => (
             <Card
               key={item.id}
-              className="group overflow-hidden cursor-pointer border-border animate-fade-in"
-              style={{ animationDelay: `${0.1 * (index % 6)}s` }}
+              className="overflow-hidden cursor-pointer border-border active:scale-[0.98] transition-transform"
               onClick={() => setSelectedItem(item)}
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
+              <div className="relative aspect-[3/4] overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <h3 className="font-heading text-lg font-semibold text-primary-foreground">
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-transparent to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-2">
+                  <p className="font-heading text-xs font-medium text-primary-foreground line-clamp-1">
                     {item.title}
-                  </h3>
-                  <p className="text-sm text-primary-foreground/80">
-                    by {item.vendorName}
+                  </p>
+                  <p className="text-[10px] text-primary-foreground/70 line-clamp-1">
+                    {item.vendorName}
                   </p>
                 </div>
                 <Badge
                   variant="secondary"
-                  className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm"
+                  className="absolute top-2 right-2 text-[10px] px-1.5 py-0 bg-background/80 backdrop-blur-sm"
                 >
                   {item.style}
                 </Badge>
@@ -86,38 +85,40 @@ const Gallery = () => {
         </div>
 
         {filteredItems.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">No weddings found for this style.</p>
+          <div className="text-center py-8">
+            <p className="text-sm text-muted-foreground">No weddings found</p>
           </div>
         )}
 
-        {/* Lightbox Dialog */}
+        {/* Lightbox Dialog - Full screen on mobile */}
         <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
-          <DialogContent className="max-w-4xl p-0 overflow-hidden">
+          <DialogContent className="max-w-full w-full h-full max-h-full p-0 m-0 border-0 rounded-none">
             <DialogHeader className="absolute top-4 right-4 z-10">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setSelectedItem(null)}
-                className="bg-background/80 backdrop-blur-sm hover:bg-background"
+                className="bg-background/80 backdrop-blur-sm hover:bg-background h-9 w-9"
               >
                 <X className="h-5 w-5" />
               </Button>
             </DialogHeader>
             {selectedItem && (
-              <div>
-                <img
-                  src={selectedItem.image}
-                  alt={selectedItem.title}
-                  className="w-full aspect-video object-cover"
-                />
-                <div className="p-6">
-                  <DialogTitle className="font-heading text-2xl mb-2">
+              <div className="h-full flex flex-col">
+                <div className="flex-1 relative">
+                  <img
+                    src={selectedItem.image}
+                    alt={selectedItem.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4 bg-background safe-area-bottom">
+                  <DialogTitle className="font-heading text-lg mb-1">
                     {selectedItem.title}
                   </DialogTitle>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary">{selectedItem.style}</Badge>
-                    <span className="text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-xs">{selectedItem.style}</Badge>
+                    <span className="text-xs text-muted-foreground">
                       by {selectedItem.vendorName}
                     </span>
                   </div>
@@ -127,7 +128,7 @@ const Gallery = () => {
           </DialogContent>
         </Dialog>
       </div>
-    </Layout>
+    </MobileLayout>
   );
 };
 
